@@ -276,21 +276,36 @@ def AIRandomAvailableMove():
 	a = Board()
 	available = availableMoves(a)
 	while available is not None:
-		#print available
-		#print a
 		a = move(random.choice(available), a)
 		available = availableMoves(a)
 		numMoves = numMoves + 1
-	#print available
-	#print a
+	return a.score, numMoves
+
+
+def AIPreferenceMove():
+	numMoves = 0
+	a = Board()
+	available = availableMoves(a)
+	while available is not None:
+		if 1 in available:
+			a = move(1, a)
+		elif 2 in available:
+			a = move(2, a)
+		elif 0 in available:
+			a = move(0, a)
+		elif 3 in available:
+			a = move(3, a)
+		available = availableMoves(a)
+		numMoves = numMoves + 1
 	return a.score, numMoves
 
 score = []
 moves = []
-for i in range(0,1000):
-	result = AIRandomAvailableMove()
-	score.append(result[0])
-	moves.append(result[1])
+for j in range(0,10):
+	for i in range(0,1000):
+		result = AIPreferenceMove()
+		score.append(result[0])
+		moves.append(result[1])
 
-print sum(score)/float(len(score))
-print sum(moves)/float(len(moves))
+	print 'score: ' + str(sum(score)/float(len(score)))
+	print 'moves: ' + str(sum(moves)/float(len(moves))) + '\n'
