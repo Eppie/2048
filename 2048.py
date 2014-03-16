@@ -283,8 +283,14 @@ def won(board):
 def highScore(available, board):
 	scores = []
 	for i in available:
-		scores.append([move(0,board).score, i])
+		scores.append([move(i,board).score, i])
 	return max(scores)[1]
+
+
+def mostFreeSpaces(available, board):
+	free = []
+	for i in available:
+		free.append(move)
 
 
 def AIRandomAvailableMove():
