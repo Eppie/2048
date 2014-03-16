@@ -271,6 +271,15 @@ def play():
 		if s.lower() == 'down':
 			print move(down, a)
 
+
+def won(board):
+	for i in range(0,4):
+		for j in range(0,4):
+			if board.board[i][j] == 2048:
+				return True
+	return False
+
+
 def AIRandomAvailableMove():
 	numMoves = 0
 	a = Board()
@@ -279,7 +288,7 @@ def AIRandomAvailableMove():
 		a = move(random.choice(available), a)
 		available = availableMoves(a)
 		numMoves = numMoves + 1
-	return a.score, numMoves
+	return a.score, numMoves, won(a)
 
 
 def AIPreferenceMove():
@@ -297,15 +306,22 @@ def AIPreferenceMove():
 			a = move(3, a)
 		available = availableMoves(a)
 		numMoves = numMoves + 1
-	return a.score, numMoves
+	return a.score, numMoves, won(a)
 
 score = []
 moves = []
+wins = 0
+rounds = 1000
 for j in range(0,10):
-	for i in range(0,1000):
-		result = AIPreferenceMove()
+	for i in range(0,rounds):
+		result = AIRandomAvailableMove()
 		score.append(result[0])
 		moves.append(result[1])
+		if result[2]:
+			wins = wins + 1
 
 	print 'score: ' + str(sum(score)/float(len(score)))
-	print 'moves: ' + str(sum(moves)/float(len(moves))) + '\n'
+	print 'moves: ' + str(sum(moves)/float(len(moves)))
+	print 'wins: ' + str(wins)
+	print 'win percentage: ' + str(float(wins)/float(rounds)*100) + '%' + '\n'
+	wins = 0

@@ -1,67 +1,107 @@
 RANDOM AVAILABLE MOVE
 
-score: 1143.236
-moves: 122.12
+score: 1130.324
+moves: 120.76
+wins: 0
+win percentage: 0.0%
 
-score: 1142.744
-moves: 121.791
+score: 1136.324
+moves: 121.2505
+wins: 0
+win percentage: 0.0%
 
-score: 1139.28933333
-moves: 121.481333333
+score: 1129.632
+moves: 120.772666667
+wins: 0
+win percentage: 0.0%
 
-score: 1134.823
-moves: 121.05675
+score: 1135.613
+moves: 121.25325
+wins: 0
+win percentage: 0.0%
 
-score: 1138.784
-moves: 121.308
+score: 1136.9664
+moves: 121.2694
+wins: 0
+win percentage: 0.0%
 
-score: 1142.30733333
-moves: 121.487833333
+score: 1135.17666667
+moves: 121.178333333
+wins: 0
+win percentage: 0.0%
 
-score: 1141.63942857
-moves: 121.393571429
+score: 1136.43028571
+moves: 121.295857143
+wins: 0
+win percentage: 0.0%
 
-score: 1145.299
-moves: 121.6845
+score: 1133.8875
+moves: 121.096625
+wins: 0
+win percentage: 0.0%
 
-score: 1145.412
-moves: 121.724333333
+score: 1135.21866667
+moves: 121.158777778
+wins: 0
+win percentage: 0.0%
 
-score: 1143.3004
-moves: 121.5518
+score: 1140.7512
+moves: 121.517
+wins: 0
+win percentage: 0.0%
 
 ----------------------------------------------------------
 
 MOVE PREFERENCE (right,up,left,down)
 
-score: 2568.444
-moves: 201.582
+score: 2663.756
+moves: 203.814
+wins: 4
+win percentage: 0.4%
 
-score: 2602.33
-moves: 202.523
+score: 2650.45
+moves: 203.2785
+wins: 5
+win percentage: 0.5%
 
-score: 2596.99733333
-moves: 203.335
+score: 2632.86933333
+moves: 203.373666667
+wins: 3
+win percentage: 0.3%
 
-score: 2616.639
-moves: 203.758
+score: 2597.457
+moves: 202.154
+wins: 0
+win percentage: 0.0%
 
-score: 2620.8984
-moves: 204.4464
+score: 2588.7864
+moves: 202.0988
+wins: 6
+win percentage: 0.6%
 
-score: 2607.57066667
-moves: 203.600666667
+score: 2600.34266667
+moves: 202.420166667
+wins: 4
+win percentage: 0.4%
 
-score: 2611.77942857
-moves: 203.198857143
+score: 2611.844
+moves: 202.491142857
+wins: 4
+win percentage: 0.4%
 
-score: 2601.052
-moves: 202.67675
+score: 2603.6415
+moves: 202.18025
+wins: 4
+win percentage: 0.4%
 
-score: 2602.65466667
-moves: 202.702222222
+score: 2598.21288889
+moves: 201.916444444
+wins: 8
+win percentage: 0.8%
 
-score: 2654.0408
-moves: 203.3093
+score: 2604.5272
+moves: 202.276
+wins: 8
+win percentage: 0.8%
 
 ----------------------------------------------------------
