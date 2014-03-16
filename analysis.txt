@@ -159,3 +159,55 @@ wins: 0
 win percentage: 0.0%
 
 ----------------------------------------------------------
+
+PURE GREEDY (FREE SPACES HEURISTIC)
+
+score: 3008.196
+moves: 253.105
+wins: 0
+win percentage: 0.0%
+
+score: 2947.518
+moves: 249.8265
+wins: 0
+win percentage: 0.0%
+
+score: 2955.01333333
+moves: 250.491
+wins: 0
+win percentage: 0.0%
+
+score: 2948.888
+moves: 250.1855
+wins: 0
+win percentage: 0.0%
+
+score: 2932.2208
+moves: 249.2394
+wins: 0
+win percentage: 0.0%
+
+score: 2928.71266667
+moves: 249.0635
+wins: 0
+win percentage: 0.0%
+
+score: 2933.52742857
+moves: 249.414428571
+wins: 0
+win percentage: 0.0%
+
+score: 2934.543
+moves: 249.476625
+wins: 0
+win percentage: 0.0%
+
+score: 2938.84355556
+moves: 249.793222222
+wins: 0
+win percentage: 0.0%
+
+score: 2946.772
+moves: 250.1986
+wins: 0
+win percentage: 0.0%

@@ -289,8 +289,16 @@ def highScore(available, board):
 
 def mostFreeSpaces(available, board):
 	free = []
-	for i in available:
-		free.append(move)
+	numfree = 0
+	for direction in available:
+		newboard = move(direction,board)
+		for i in range(0,4):
+			for j in range(0,4):
+				if newboard.board[i][j] is None:
+					numfree = numfree + 1
+		free.append([numfree, direction])
+		numfree = 0
+	return max(free)[1]
 
 
 def AIRandomAvailableMove():
@@ -333,13 +341,25 @@ def AIHighScoreMove():
 		numMoves = numMoves + 1
 	return a.score, numMoves, won(a)
 
+
+def AIFreeSpaces():
+	numMoves = 0
+	a = Board()
+	available = availableMoves(a)
+	while available is not None:
+		direction = mostFreeSpaces(available, a)
+		a = move(direction, a)
+		available = availableMoves(a)
+		numMoves = numMoves + 1
+	return a.score, numMoves, won(a)
+
 score = []
 moves = []
 wins = 0
 rounds = 1000
 for j in range(0,10):
 	for i in range(0,rounds):
-		result = AIHighScoreMove()
+		result = AIFreeSpaces()
 		score.append(result[0])
 		moves.append(result[1])
 		if result[2]:
