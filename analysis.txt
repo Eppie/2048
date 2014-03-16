@@ -105,3 +105,57 @@ wins: 8
 win percentage: 0.8%
 
 ----------------------------------------------------------
+
+PURE GREEDY
+
+score: 795.092
+moves: 98.55
+wins: 0
+win percentage: 0.0%
+
+score: 808.066
+moves: 99.5395
+wins: 0
+win percentage: 0.0%
+
+score: 815.252
+moves: 100.067333333
+wins: 0
+win percentage: 0.0%
+
+score: 820.832
+moves: 100.55625
+wins: 0
+win percentage: 0.0%
+
+score: 820.8912
+moves: 100.4496
+wins: 0
+win percentage: 0.0%
+
+score: 819.056
+moves: 100.317333333
+wins: 0
+win percentage: 0.0%
+
+score: 818.209142857
+moves: 100.248714286
+wins: 0
+win percentage: 0.0%
+
+score: 818.83
+moves: 100.329
+wins: 0
+win percentage: 0.0%
+
+score: 817.479555556
+moves: 100.177333333
+wins: 0
+win percentage: 0.0%
+
+score: 815.504
+moves: 100.0282
+wins: 0
+win percentage: 0.0%
+
+----------------------------------------------------------

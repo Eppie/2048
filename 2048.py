@@ -280,6 +280,13 @@ def won(board):
 	return False
 
 
+def highScore(available, board):
+	scores = []
+	for i in available:
+		scores.append([move(0,board).score, i])
+	return max(scores)[1]
+
+
 def AIRandomAvailableMove():
 	numMoves = 0
 	a = Board()
@@ -308,13 +315,25 @@ def AIPreferenceMove():
 		numMoves = numMoves + 1
 	return a.score, numMoves, won(a)
 
+
+def AIHighScoreMove():
+	numMoves = 0
+	a = Board()
+	available = availableMoves(a)
+	while available is not None:
+		direction = highScore(available, a)
+		a = move(direction, a)
+		available = availableMoves(a)
+		numMoves = numMoves + 1
+	return a.score, numMoves, won(a)
+
 score = []
 moves = []
 wins = 0
 rounds = 1000
 for j in range(0,10):
 	for i in range(0,rounds):
-		result = AIRandomAvailableMove()
+		result = AIHighScoreMove()
 		score.append(result[0])
 		moves.append(result[1])
 		if result[2]:
