@@ -1,372 +1,231 @@
 import random
-import cProfile
-
-left = 0
-right = 1
-up = 2
-down = 3
-
-
-def NewTile():
-	return random.choice([2, 2, 2, 2, 2, 2, 2, 2, 2, 4])
-
-
-def NewPos(available):
-	return random.choice(available)
-
+import math
 
 class Board():
-	def __init__(self):
-		self.board = [[None, None, None, None], [None, None, None, None], [None, None, None, None], [None, None, None, None]]
-		self.count = 0
-		self.score = 0
+    UP, DOWN, LEFT, RIGHT = 1, 2, 3, 4
 
-		while self.count < 2:
-			available = []
-			for i in range(0,4):
-				for j in range(0,4):
-					if self.board[i][j] is None:
-						available.append([i,j])
-			pos = NewPos(available)
-			self.board[pos[0]][pos[1]] = NewTile()
-			self.count += 1
+    def __init__(self, azmode=False):
+        self.__size = 4
+        self.__goal = 2048
+        self.__won = False
+        self.__azmode = False
+        self.__score = 0
+        self.__nummoves = 0
+        self.cells = [[0]*self.__size for _ in xrange(self.__size)]
+        self.addTile()
+        self.addTile()
 
 
-	def __str__(self):
-		string = ''
-		for row in self.board:
-			for j in row:
-				if j is None:
-					string = string + 'x '
-				else:
-					string = string + str(j) + ' '
-			string = string + '\n'
-		string = string + 'score: ' + str(self.score) + '\n'
-		return string
+    def __str__(self):
+        """
+        return a string representation of the current board.
+        """
+        rg = xrange(self.size())
+        s = '\n'.join([' '.join([self.getCellStr(x, y) for x in rg]) for y in rg])
+        return s + '\n'
 
+    def size(self):
+        """return the board size"""
+        return self.__size
 
-	def __repr__(self):
-		return str(self.board)
+    def score(self):
+        """return the current score"""
+        return self.__score
 
+    def numMoves(self):
+        """return the number of moves made so far"""
+        return self.__nummoves
 
-def moveLeft(board):
-	newboard = Board()
-	for i in range(0,4):
-		for j in range(0,4):
-			newboard.board[i][j] = board.board[i][j]
-	newboard.score = board.score
-	for i in range(0, 4):
-		temp = []
-		for j in range(0, 4):
-			if newboard.board[i][j] is not None:
-				temp.append(newboard.board[i][j])
-		while len(temp) < 4:
-			temp.append(None)
-		newboard.board[i] = temp
-		if newboard.board[i][0] == newboard.board[i][1] and newboard.board[i][2] == newboard.board[i][3] and newboard.board[i][0] is not None and newboard.board[i][2] is not None:
-			newboard.board[i][0] = newboard.board[i][0] * 2
-			newboard.board[i][1] = newboard.board[i][1] * 2
-			newboard.board[i][2] = None
-			newboard.board[i][3] = None
-			newboard.score = newboard.score + newboard.board[i][0]
-			newboard.score = newboard.score + newboard.board[i][1]
-		elif newboard.board[i][0] == newboard.board[i][1] and newboard.board[i][0] is not None:
-			newboard.board[i][0] = newboard.board[i][0] * 2
-			newboard.board[i][1] = newboard.board[i][2]
-			newboard.board[i][2] = newboard.board[i][3]
-			newboard.board[i][3] = None
-			newboard.score = newboard.score + newboard.board[i][0]
-		elif newboard.board[i][1] == newboard.board[i][2] and newboard.board[i][1] is not None:
-			newboard.board[i][1] = newboard.board[i][1] * 2
-			newboard.board[i][2] = newboard.board[i][3]
-			newboard.board[i][3] = None
-			newboard.score = newboard.score + newboard.board[i][1]
-		elif newboard.board[i][2] == newboard.board[i][3] and newboard.board[i][2] is not None:
-			newboard.board[i][2] = newboard.board[i][2] * 2
-			newboard.board[i][3] = None
-			newboard.score = newboard.score + newboard.board[i][2]
-	return newboard
+    def goal(self):
+        """return the board goal"""
+        return self.__goal
 
+    def won(self):
+        """
+        return True if the board contains at least one tile with the board goal, False otherwise
+        """
+        return self.__won
 
-def moveRight(board):
-	newboard = Board()
-	for i in range(0,4):
-		for j in range(0,4):
-			newboard.board[i][j] = board.board[i][j]
-	newboard.score = board.score
-	for i in range(0,4):
-		temp = []
-		for j in range(0,4):
-			if newboard.board[i][j] is not None:
-				temp.append(newboard.board[i][j])
-		while len(temp) < 4:
-			temp.insert(0, None)
-		newboard.board[i] = temp
-		if newboard.board[i][0] == newboard.board[i][1] and newboard.board[i][2] == newboard.board[i][3] and newboard.board[i][0] is not None and newboard.board[i][2] is not None:
-			newboard.board[i][3] = newboard.board[i][2] * 2
-			newboard.board[i][2] = newboard.board[i][1] * 2
-			newboard.board[i][0] = None
-			newboard.board[i][1] = None
-			newboard.score = newboard.score + newboard.board[i][3]
-			newboard.score = newboard.score + newboard.board[i][2]
-		elif newboard.board[i][2] == newboard.board[i][3] and newboard.board[i][2] is not None:
-			newboard.board[i][3] = newboard.board[i][2] * 2
-			newboard.board[i][2] = newboard.board[i][1]
-			newboard.board[i][1] = newboard.board[i][0]
-			newboard.board[i][0] = None
-			newboard.score = newboard.score + newboard.board[i][3]
-		elif newboard.board[i][1] == newboard.board[i][2] and newboard.board[i][1] is not None:
-			newboard.board[i][2] = newboard.board[i][1] * 2
-			newboard.board[i][1] = newboard.board[i][0]
-			newboard.board[i][0] = None
-			newboard.score = newboard.score + newboard.board[i][2]
-		elif newboard.board[i][0] == newboard.board[i][1] and newboard.board[i][0] is not None:
-			newboard.board[i][1] = newboard.board[i][0] * 2
-			newboard.board[i][0] = None
-			newboard.score = newboard.score + newboard.board[i][1]
-	return newboard
+    def canMove(self):
+        """
+        return True if there are any possible moves, or False otherwise
+        """
+        if not self.filled():
+            return True
 
+        for y in xrange(0, self.__size):
+            for x in xrange(0, self.__size):
+                c = self.getCell(x, y)
+                if (x < self.__size-1 and c == self.getCell(x+1, y)) or (y < self.__size-1 and c == self.getCell(x, y+1)):
+                    return True
 
-def moveUp(board):
-	newboard = Board()
-	for i in range(0,4):
-		for j in range(0,4):
-			newboard.board[i][j] = board.board[i][j]
-	newboard.score = board.score
-	for i in range(0,4):
-		temp = []
-		for j in range(0,4):
-			if newboard.board[j][i] is not None:
-				temp.append(newboard.board[j][i])
-		while len(temp) < 4:
-			temp.append(None)
-		for j in range(0,4):
-			newboard.board[j][i] = temp[j]
-		if newboard.board[0][i] == newboard.board[1][i] and newboard.board[2][i] == newboard.board[3][i] and newboard.board[0][i] is not None and newboard.board[2][i] is not None:
-			newboard.board[0][i] = newboard.board[0][i] * 2
-			newboard.board[1][i] = newboard.board[1][i] * 2
-			newboard.board[2][i] = None
-			newboard.board[3][i] = None
-			newboard.score = newboard.score + newboard.board[0][i]
-			newboard.score = newboard.score + newboard.board[1][i]
-		elif newboard.board[0][i] == newboard.board[1][i] and newboard.board[0][i] is not None:
-			newboard.board[0][i] = newboard.board[0][i] * 2
-			newboard.board[1][i] = newboard.board[2][i]
-			newboard.board[2][i] = newboard.board[3][i]
-			newboard.board[3][i] = None
-			newboard.score = newboard.score + newboard.board[0][i]
-		elif newboard.board[1][i] == newboard.board[2][i] and newboard.board[1][i] is not None:
-			newboard.board[1][i] = newboard.board[2][i] * 2
-			newboard.board[2][i] = newboard.board[3][i]
-			newboard.board[3][i] = None
-			newboard.score = newboard.score + newboard.board[1][i]
-		elif newboard.board[2][i] == newboard.board[3][i] and newboard.board[2][i] is not None:
-			newboard.board[2][i] = newboard.board[2][i] * 2
-			newboard.board[3][i] = None
-			newboard.score = newboard.score + newboard.board[2][i]
-	return newboard
+        return False
 
+    def filled(self):
+        """
+        return True if the board is filled
+        """
+        return len(self.getEmptyCells()) == 0
 
-def moveDown(board):
-	newboard = Board()
-	for i in range(0,4):
-		for j in range(0,4):
-			newboard.board[i][j] = board.board[i][j]
-	newboard.score = board.score
-	for i in range(0,4):
-		temp = []
-		for j in range(0,4):
-			if newboard.board[j][i] is not None:
-				temp.append(newboard.board[j][i])
-		while len(temp) < 4:
-			temp.insert(0, None)
-		for j in range(0,4):
-			newboard.board[j][i] = temp[j]
-		if newboard.board[0][i] == newboard.board[1][i] and newboard.board[2][i] == newboard.board[3][i] and newboard.board[0][i] is not None and newboard.board[2][i] is not None:
-			newboard.board[3][i] = newboard.board[2][i] * 2
-			newboard.board[2][i] = newboard.board[1][i] * 2
-			newboard.board[0][i] = None
-			newboard.board[1][i] = None
-			newboard.score = newboard.score + newboard.board[3][i]
-			newboard.score = newboard.score + newboard.board[2][i]
-		elif newboard.board[2][i] == newboard.board[3][i] and newboard.board[2][i] is not None:
-			newboard.board[3][i] = newboard.board[2][i] * 2
-			newboard.board[2][i] = newboard.board[1][i]
-			newboard.board[1][i] = newboard.board[0][i]
-			newboard.board[0][i] = None
-			newboard.score = newboard.score + newboard.board[3][i]
-		elif newboard.board[1][i] == newboard.board[2][i] and newboard.board[1][i] is not None:
-			newboard.board[2][i] = newboard.board[1][i] * 2
-			newboard.board[1][i] = newboard.board[0][i]
-			newboard.board[0][i] = None
-			newboard.score = newboard.score + newboard.board[2][i]
-		elif newboard.board[0][i] == newboard.board[1][i] and newboard.board[0][i] is not None:
-			newboard.board[1][i] = newboard.board[0][i] * 2
-			newboard.board[0][i] = None
-			newboard.score = newboard.score + newboard.board[1][i]
-	return newboard
+    def addTile(self, choices=([2]*9+[4])):
+        """
+        add a random tile in an empty cell
+          choices: a list of possible choices for the value of the tile.
+                   default is [2, 2, 2, 2, 2, 2, 2, 2, 2, 4].
+        """
+        v = random.choice(choices)
+        empty = self.getEmptyCells()
+        if empty:
+            x, y = random.choice(empty)
+            self.setCell(x, y, v)
 
+    def getCell(self, x, y):
+        """return the cell value at x,y"""
+        return self.cells[y][x]
 
-def addPiece(board):
-	available = []
-	for i in range(0,4):
-		for j in range(0,4):
-			if board.board[i][j] is None:
-				available.append([i,j])
-	try:
-		pos = NewPos(available)
-		board.board[pos[0]][pos[1]] = NewTile()
-	except IndexError:
-		pass
+    def getCellStr(self, x, y):
+        """
+        return a string representation of the cell located at x,y.
+        """
+        c = self.getCell(x, y)
 
+        az = {}
+        for i in range(1, int(math.log(self.goal(), 2))):
+            az[2**i] = chr(i+96)
 
-def move(direction, board):
-	newboard = Board()
-	newboard.board = board.board
-	if direction == left:
-		newboard = moveLeft(board)
-	elif direction == right:
-		newboard = moveRight(board)
-	elif direction == up:
-		newboard = moveUp(board)
-	elif direction == down:
-		newboard = moveDown(board)
-	else:
-		return 'UNKNOWN MOVE'
-	addPiece(newboard)
-	return newboard
+        if c == 0 and self.__azmode:
+            return '.'
+        elif c == 0:
+            return '  .'
 
+        elif self.__azmode:
+            if c not in az:
+                return '?'
+            s = az[c]
+        elif c == 1024:
+            s = ' 1k'
+        elif c == 2048:
+            s = ' 2k'
+        else:
+            s = '%3d' % c
 
-def availableMoves(board):
-	available = []
-	newboard = Board()
-	for i in range(0,4):
-		for j in range(0,4):
-			newboard.board[i][j] = board.board[i][j]
-	if newboard.board != moveLeft(newboard).board:
-		available.append(left)
-	if newboard.board != moveRight(newboard).board:
-		available.append(right)
-	if newboard.board != moveUp(newboard).board:
-		available.append(up)
-	if newboard.board != moveDown(newboard).board:
-		available.append(down)
-	if not available:
-		return None
-	else:
-		return available
+        return s
 
+    def setCell(self, x, y, v):
+        """set the cell value at x,y"""
+        self.cells[y][x] = v
 
-def play():
-	a = Board()
-	while availableMoves(a) is not None:
-		print a
-		s = raw_input()
-		if s.lower() == 'left':
-			print move(left, a)
-		if s.lower() == 'right':
-			print move(right, a)
-		if s.lower() == 'up':
-			print move(up, a)
-		if s.lower() == 'down':
-			print move(down, a)
+    def getLine(self, y):
+        """return the y-th line, starting at 0"""
+        return [self.getCell(i, y) for i in xrange(0, self.__size)]
 
+    def getCol(self, x):
+        """return the x-th column, starting at 0"""
+        return [self.getCell(x, i) for i in xrange(0, self.__size)]
 
-def won(board):
-	for i in range(0,4):
-		for j in range(0,4):
-			if board.board[i][j] == 2048:
-				return True
-	return False
+    def setLine(self, y, l):
+        """set the y-th line, starting at 0"""
+        for i in xrange(0, self.__size):
+            self.setCell(i, y, l[i])
 
+    def setCol(self, x, l):
+        """set the x-th column, starting at 0"""
+        for i in xrange(0, self.__size):
+            self.setCell(x, i, l[i])
 
-def highScore(available, board):
-	scores = []
-	for i in available:
-		scores.append([move(i,board).score, i])
-	return max(scores)[1]
+    def getEmptyCells(self):
+        """return a (x, y) pair for each cell"""
+        return [(x, y) for x in xrange(self.__size) for y in xrange(self.__size) if self.getCell(x, y) == 0]
 
+    def __collapseLineOrCol(self, line, d):
+        """
+        Merge tiles in a line or column according to a direction and return a
+        tuple with the new line and the score for the move on this line
+        """
+        if (d == Board.LEFT or d == Board.UP):
+            inc = 1
+            rg = xrange(0, self.__size-1, inc)
+        else:
+            inc = -1
+            rg = xrange(self.__size-1, 0, inc)
 
-def mostFreeSpaces(available, board):
-	free = []
-	numfree = 0
-	for direction in available:
-		newboard = move(direction,board)
-		for i in range(0,4):
-			for j in range(0,4):
-				if newboard.board[i][j] is None:
-					numfree = numfree + 1
-		free.append([numfree, direction])
-		numfree = 0
-	return max(free)[1]
+        pts = 0
+        for i in rg:
+            if line[i] == 0:
+                continue
+            if line[i] == line[i+inc]:
+                v = line[i]*2
+                if v == self.__goal:
+                    self.__won = True
 
+                line[i] = v
+                line[i+inc] = 0
+                pts += v
 
-def AIRandomAvailableMove():
-	numMoves = 0
-	a = Board()
-	available = availableMoves(a)
-	while available is not None:
-		a = move(random.choice(available), a)
-		available = availableMoves(a)
-		numMoves = numMoves + 1
-	return a.score, numMoves, won(a)
+        return (line, pts)
 
+    def __moveLineOrCol(self, line, d):
+        """
+        Move a line or column to a given direction (d)
+        """
+        nl = [c for c in line if c != 0]
+        if d == Board.UP or d == Board.LEFT:
+            return nl + [0] * (self.__size - len(nl))
+        return [0] * (self.__size - len(nl)) + nl
 
-def AIPreferenceMove():
-	numMoves = 0
-	a = Board()
-	available = availableMoves(a)
-	while available is not None:
-		if 1 in available:
-			a = move(1, a)
-		elif 2 in available:
-			a = move(2, a)
-		elif 0 in available:
-			a = move(0, a)
-		elif 3 in available:
-			a = move(3, a)
-		available = availableMoves(a)
-		numMoves = numMoves + 1
-	return a.score, numMoves, won(a)
+    def move(self, d, add_tile=True):
+        """
+        move and return the move score
+        """
+        if d == Board.LEFT or d == Board.RIGHT:
+            chg, get = self.setLine, self.getLine
+        elif d == Board.UP or d == Board.DOWN:
+            chg, get = self.setCol, self.getCol
+        else:
+            return 0
 
+        moved = False
+        score = 0
 
-def AIHighScoreMove():
-	numMoves = 0
-	a = Board()
-	available = availableMoves(a)
-	while available is not None:
-		direction = highScore(available, a)
-		a = move(direction, a)
-		available = availableMoves(a)
-		numMoves = numMoves + 1
-	return a.score, numMoves, won(a)
+        for i in xrange(0, self.__size):
+            origin = get(i)
+            line = self.__moveLineOrCol(origin, d)
+            collapsed, pts = self.__collapseLineOrCol(line, d)
+            new = self.__moveLineOrCol(collapsed, d)
+            chg(i, new)
+            if origin != new:
+                moved = True
+            score += pts
 
+        if moved and add_tile:
+            self.addTile()
 
-def AIFreeSpaces():
-	numMoves = 0
-	a = Board()
-	available = availableMoves(a)
-	while available is not None:
-		direction = mostFreeSpaces(available, a)
-		a = move(direction, a)
-		available = availableMoves(a)
-		numMoves = numMoves + 1
-	return a.score, numMoves, won(a)
+        self.__score += score
+        self.__nummoves += 1
 
-score = []
-moves = []
-wins = 0
-rounds = 1000
-for j in range(0,10):
-	for i in range(0,rounds):
-		result = AIFreeSpaces()
-		score.append(result[0])
-		moves.append(result[1])
-		if result[2]:
-			wins = wins + 1
+def AIRandomMove():
+    return random.choice([1, 2, 3, 4])
 
-	print 'score: ' + str(sum(score)/float(len(score)))
-	print 'moves: ' + str(sum(moves)/float(len(moves)))
-	print 'wins: ' + str(wins)
-	print 'win percentage: ' + str(float(wins)/float(rounds)*100) + '%' + '\n'
-	wins = 0
+def AITest(rounds=1000):
+    scores = []
+    moves = []
+
+    wins = 0
+    for _ in range(10):
+        for _ in range(rounds):
+            a = Board()
+            while a.canMove():
+                movetomake = AIRandomMove()
+                a.move(movetomake)
+            if a.won():
+                wins += 1
+            scores.append(a.score())
+            moves.append(a.numMoves())
+
+        print 'score: ' + str(sum(scores)/float(len(scores)))
+        print 'moves: ' + str(sum(moves)/float(len(moves)))
+        print 'wins: ' + str(wins)
+        print 'win percentage: ' + str(float(wins)/float(rounds)*100) + '%'
+        print '\n'
+
+AITest(1000)

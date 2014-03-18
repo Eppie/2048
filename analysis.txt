@@ -1,213 +1,64 @@
-RANDOM AVAILABLE MOVE
+RANDOM MOVE
 
-score: 1130.324
-moves: 120.76
+score: 1081.036
+moves: 139.372
 wins: 0
 win percentage: 0.0%
 
-score: 1136.324
-moves: 121.2505
+
+score: 1088.63
+moves: 140.131
 wins: 0
 win percentage: 0.0%
 
-score: 1129.632
-moves: 120.772666667
+
+score: 1088.70533333
+moves: 140.113333333
 wins: 0
 win percentage: 0.0%
 
-score: 1135.613
-moves: 121.25325
+
+score: 1085.849
+moves: 139.86675
 wins: 0
 win percentage: 0.0%
 
-score: 1136.9664
-moves: 121.2694
+
+score: 1085.328
+moves: 139.9314
 wins: 0
 win percentage: 0.0%
 
-score: 1135.17666667
-moves: 121.178333333
+
+score: 1085.80666667
+moves: 139.889833333
 wins: 0
 win percentage: 0.0%
 
-score: 1136.43028571
-moves: 121.295857143
+
+score: 1087.068
+moves: 139.913285714
 wins: 0
 win percentage: 0.0%
 
-score: 1133.8875
-moves: 121.096625
+
+score: 1090.4745
+moves: 140.178125
 wins: 0
 win percentage: 0.0%
 
-score: 1135.21866667
-moves: 121.158777778
+
+score: 1091.31466667
+moves: 140.267111111
 wins: 0
 win percentage: 0.0%
 
-score: 1140.7512
-moves: 121.517
-wins: 0
-win percentage: 0.0%
 
-----------------------------------------------------------
-
-MOVE PREFERENCE (right,up,left,down)
-
-score: 2663.756
-moves: 203.814
-wins: 4
-win percentage: 0.4%
-
-score: 2650.45
-moves: 203.2785
-wins: 5
-win percentage: 0.5%
-
-score: 2632.86933333
-moves: 203.373666667
-wins: 3
-win percentage: 0.3%
-
-score: 2597.457
-moves: 202.154
-wins: 0
-win percentage: 0.0%
-
-score: 2588.7864
-moves: 202.0988
-wins: 6
-win percentage: 0.6%
-
-score: 2600.34266667
-moves: 202.420166667
-wins: 4
-win percentage: 0.4%
-
-score: 2611.844
-moves: 202.491142857
-wins: 4
-win percentage: 0.4%
-
-score: 2603.6415
-moves: 202.18025
-wins: 4
-win percentage: 0.4%
-
-score: 2598.21288889
-moves: 201.916444444
-wins: 8
-win percentage: 0.8%
-
-score: 2604.5272
-moves: 202.276
-wins: 8
-win percentage: 0.8%
-
-----------------------------------------------------------
-
-PURE GREEDY (SCORE HEURISTIC)
-
-score: 3006.172
-moves: 252.695
-wins: 0
-win percentage: 0.0%
-
-score: 3060.682
-moves: 256.0015
-wins: 0
-win percentage: 0.0%
-
-score: 3062.17866667
-moves: 256.072333333
-wins: 0
-win percentage: 0.0%
-
-score: 3059.212
-moves: 255.8375
-wins: 0
-win percentage: 0.0%
-
-score: 3083.62
-moves: 257.1918
-wins: 0
-win percentage: 0.0%
-
-score: 3076.23866667
-moves: 256.7235
-wins: 0
-win percentage: 0.0%
-
-score: 3061.76171429
-moves: 256.081428571
-wins: 0
-win percentage: 0.0%
-
-score: 3063.49
-moves: 256.26625
-wins: 0
-win percentage: 0.0%
-
-score: 3071.04622222
-moves: 256.694777778
-wins: 0
-win percentage: 0.0%
-
-score: 3070.8664
-moves: 256.7561
+score: 1092.8432
+moves: 140.3449
 wins: 0
 win percentage: 0.0%
 
 ----------------------------------------------------------
 
-PURE GREEDY (FREE SPACES HEURISTIC)
 
-score: 3008.196
-moves: 253.105
-wins: 0
-win percentage: 0.0%
-
-score: 2947.518
-moves: 249.8265
-wins: 0
-win percentage: 0.0%
-
-score: 2955.01333333
-moves: 250.491
-wins: 0
-win percentage: 0.0%
-
-score: 2948.888
-moves: 250.1855
-wins: 0
-win percentage: 0.0%
-
-score: 2932.2208
-moves: 249.2394
-wins: 0
-win percentage: 0.0%
-
-score: 2928.71266667
-moves: 249.0635
-wins: 0
-win percentage: 0.0%
-
-score: 2933.52742857
-moves: 249.414428571
-wins: 0
-win percentage: 0.0%
-
-score: 2934.543
-moves: 249.476625
-wins: 0
-win percentage: 0.0%
-
-score: 2938.84355556
-moves: 249.793222222
-wins: 0
-win percentage: 0.0%
-
-score: 2946.772
-moves: 250.1986
-wins: 0
-win percentage: 0.0%
