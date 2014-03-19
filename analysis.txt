@@ -1,64 +1,142 @@
-RANDOM MOVE
+RANDOM AVAILABLE MOVE
 
-score: 1081.036
-moves: 139.372
+score: 1119.428
+moves: 120.169
 wins: 0
 win percentage: 0.0%
+best score: 4940
 
 
-score: 1088.63
-moves: 140.131
+score: 1096.884
+moves: 118.79
 wins: 0
 win percentage: 0.0%
+best score: 5060
 
 
-score: 1088.70533333
-moves: 140.113333333
+score: 1107.756
+moves: 119.343
 wins: 0
 win percentage: 0.0%
+best score: 3048
 
 
-score: 1085.849
-moves: 139.86675
+score: 1082.948
+moves: 117.676
 wins: 0
 win percentage: 0.0%
+best score: 3316
 
 
-score: 1085.328
-moves: 139.9314
+score: 1100.62
+moves: 118.844
 wins: 0
 win percentage: 0.0%
+best score: 3132
 
 
-score: 1085.80666667
-moves: 139.889833333
+score: 1135.932
+moves: 121.199
 wins: 0
 win percentage: 0.0%
+best score: 4420
 
 
-score: 1087.068
-moves: 139.913285714
+score: 1106.524
+moves: 119.348
 wins: 0
 win percentage: 0.0%
+best score: 3188
 
 
-score: 1090.4745
-moves: 140.178125
+score: 1129.568
+moves: 120.934
 wins: 0
 win percentage: 0.0%
+best score: 3408
 
 
-score: 1091.31466667
-moves: 140.267111111
+score: 1111.308
+moves: 119.564
 wins: 0
 win percentage: 0.0%
+best score: 3212
 
 
-score: 1092.8432
-moves: 140.3449
+score: 1124.828
+moves: 120.371
 wins: 0
 win percentage: 0.0%
+best score: 5120
 
 ----------------------------------------------------------
+PREFERENCE MOVE
+
+score: 2299.504
+moves: 208.102
+wins: 0
+win percentage: 0.0%
+best score: 7552
 
 
+score: 2226.464
+moves: 203.052
+wins: 0
+win percentage: 0.0%
+best score: 6444
+
+
+score: 2276.976
+moves: 206.231
+wins: 0
+win percentage: 0.0%
+best score: 7440
+
+
+score: 2346.164
+moves: 210.18
+wins: 0
+win percentage: 0.0%
+best score: 7048
+
+
+score: 2312.316
+moves: 208.71
+wins: 0
+win percentage: 0.0%
+best score: 6788
+
+
+score: 2228.516
+moves: 202.77
+wins: 0
+win percentage: 0.0%
+best score: 7156
+
+
+score: 2308.284
+moves: 207.825
+wins: 0
+win percentage: 0.0%
+best score: 7420
+
+
+score: 2270.676
+moves: 205.758
+wins: 0
+win percentage: 0.0%
+best score: 6716
+
+
+score: 2254.516
+moves: 203.945
+wins: 0
+win percentage: 0.0%
+best score: 6728
+
+
+score: 2298.88
+moves: 207.878
+wins: 0
+win percentage: 0.0%
+best score: 7472

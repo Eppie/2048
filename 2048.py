@@ -1,18 +1,19 @@
 import random
 import math
 import copy
+import cProfile
 
 class Board():
     UP, DOWN, LEFT, RIGHT = 1, 2, 3, 4
 
     def __init__(self, azmode=False):
-        self.__size = 4
-        self.__goal = 2048
         self.__won = False
         self.__azmode = False
         self.__score = 0
         self.__nummoves = 0
-        self.cells = [[0]*self.__size for _ in xrange(self.__size)]
+        self.choices = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4]
+        self.empty = [(x, y) for x in range(4) for y in range(4)]
+        self.cells = [[0]*4 for _ in range(4)]
         self.addTile()
         self.addTile()
 
@@ -21,13 +22,9 @@ class Board():
         """
         return a string representation of the current board.
         """
-        rg = xrange(self.size())
+        rg = range(4)
         s = '\n'.join([' '.join([self.getCellStr(x, y) for x in rg]) for y in rg])
         return s + '\n'
-
-    def size(self):
-        """return the board size"""
-        return self.__size
 
     def score(self):
         """return the current score"""
@@ -37,13 +34,9 @@ class Board():
         """return the number of moves made so far"""
         return self.__nummoves
 
-    def goal(self):
-        """return the board goal"""
-        return self.__goal
-
     def won(self):
         """
-        return True if the board contains at least one tile with the board goal, False otherwise
+        return True if the board contains at least one tile equal to 2048 or greater, False otherwise
         """
         return self.__won
 
@@ -54,10 +47,10 @@ class Board():
         if not self.filled():
             return True
 
-        for y in xrange(0, self.__size):
-            for x in xrange(0, self.__size):
+        for y in xrange(0, 4):
+            for x in xrange(0, 4):
                 c = self.getCell(x, y)
-                if (x < self.__size-1 and c == self.getCell(x+1, y)) or (y < self.__size-1 and c == self.getCell(x, y+1)):
+                if (x < 3 and c == self.getCell(x+1, y)) or (y < 3 and c == self.getCell(x, y+1)):
                     return True
 
         return False
@@ -68,16 +61,15 @@ class Board():
         """
         return len(self.getEmptyCells()) == 0
 
-    def addTile(self, choices=([2]*9+[4])):
+    def addTile(self):
         """
         add a random tile in an empty cell
           choices: a list of possible choices for the value of the tile.
                    default is [2, 2, 2, 2, 2, 2, 2, 2, 2, 4].
         """
-        v = random.choice(choices)
-        empty = self.getEmptyCells()
-        if empty:
-            x, y = random.choice(empty)
+        v = random.choice(self.choices)
+        if self.empty:
+            x, y = random.choice(self.empty)
             self.setCell(x, y, v)
 
     def getCell(self, x, y):
@@ -91,7 +83,7 @@ class Board():
         c = self.getCell(x, y)
 
         az = {}
-        for i in range(1, int(math.log(self.goal(), 2))):
+        for i in range(1, int(math.log(2048, 2))):
             az[2**i] = chr(i+96)
 
         if c == 0 and self.__azmode:
@@ -118,25 +110,25 @@ class Board():
 
     def getLine(self, y):
         """return the y-th line, starting at 0"""
-        return [self.getCell(i, y) for i in xrange(0, self.__size)]
+        return [self.getCell(i, y) for i in range(4)]
 
     def getCol(self, x):
         """return the x-th column, starting at 0"""
-        return [self.getCell(x, i) for i in xrange(0, self.__size)]
+        return [self.getCell(x, i) for i in range(4)]
 
     def setLine(self, y, l):
         """set the y-th line, starting at 0"""
-        for i in xrange(0, self.__size):
+        for i in range(4):
             self.setCell(i, y, l[i])
 
     def setCol(self, x, l):
         """set the x-th column, starting at 0"""
-        for i in xrange(0, self.__size):
+        for i in range(4):
             self.setCell(x, i, l[i])
 
     def getEmptyCells(self):
         """return a (x, y) pair for each cell"""
-        return [(x, y) for x in xrange(self.__size) for y in xrange(self.__size) if self.getCell(x, y) == 0]
+        return [(x, y) for x in range(4) for y in range(4) if self.getCell(x, y) == 0]
 
     def __collapseLineOrCol(self, line, d):
         """
@@ -145,10 +137,10 @@ class Board():
         """
         if (d == Board.LEFT or d == Board.UP):
             inc = 1
-            rg = xrange(0, self.__size-1, inc)
+            rg = xrange(0, 3, inc)
         else:
             inc = -1
-            rg = xrange(self.__size-1, 0, inc)
+            rg = xrange(3, 0, inc)
 
         pts = 0
         for i in rg:
@@ -156,7 +148,7 @@ class Board():
                 continue
             if line[i] == line[i+inc]:
                 v = line[i]*2
-                if v == self.__goal:
+                if v == 2048:
                     self.__won = True
 
                 line[i] = v
@@ -171,8 +163,8 @@ class Board():
         """
         nl = [c for c in line if c != 0]
         if d == Board.UP or d == Board.LEFT:
-            return nl + [0] * (self.__size - len(nl))
-        return [0] * (self.__size - len(nl)) + nl
+            return nl + [0] * (4 - len(nl))
+        return [0] * (4 - len(nl)) + nl
 
     def move(self, d, add_tile=True):
         """
@@ -188,7 +180,7 @@ class Board():
         moved = False
         score = 0
 
-        for i in xrange(0, self.__size):
+        for i in range(4):
             origin = get(i)
             line = self.__moveLineOrCol(origin, d)
             collapsed, pts = self.__collapseLineOrCol(line, d)
@@ -198,33 +190,38 @@ class Board():
                 moved = True
             score += pts
 
+        self.empty = self.getEmptyCells()
+
         if moved and add_tile:
             self.addTile()
 
         self.__score += score
         self.__nummoves += 1
+
         return moved
 
 def availableMoves(board):
     moves = []
     newboard = Board()
     for i in range(1,5):
-        newboard.cells = copy.deepcopy(board.cells)
+        for x in range(0,4):
+            for y in range(0,4):
+                newboard.cells[x][y] = board.cells[x][y]
         if newboard.move(i):
             moves.append(i)
     return moves
-            
+
 def AIRandomAvailableMove(available):
     return random.choice(available)
 
 def AIPreferenceMove(available):
     if 4 in available:
         return 4
-    elif 1 in available:
+    if 1 in available:
         return 1
-    elif 3 in available:
+    if 3 in available:
         return 3
-    elif 2 in available:
+    if 2 in available:
         return 2
 
 def AITest(rounds=1000):
@@ -232,12 +229,12 @@ def AITest(rounds=1000):
     moves = []
     best = 0
     wins = 0
-    for _ in range(1):
+    for _ in range(10):
         for _ in range(rounds):
             a = Board()
             available = availableMoves(a)
             while available:
-                movetomake = AIPreferenceMove(available)
+                movetomake = AIRandomAvailableMove(available)
                 a.move(movetomake)
                 available = availableMoves(a)
             if a.won():
