@@ -142,7 +142,7 @@ win percentage: 0.0%
 best score: 7472
 
 ----------------------------------------------------------
-HIGH SCORE MOVE
+HIGH SCORE MOVE (PURE GREEDY)
 
 score: 4087.748
 moves: 318.003
@@ -212,3 +212,75 @@ moves: 322.016
 wins: 0
 win percentage: 0.0%
 best score: 13528
+
+----------------------------------------------------------
+FREE SPACE MOVE (PURE GREEDY)
+
+score: 2980.588
+moves: 252.199
+wins: 0
+win percentage: 0.0%
+best score: 11704
+
+
+score: 2956.872
+moves: 250.785
+wins: 0
+win percentage: 0.0%
+best score: 9108
+
+
+score: 2950.816
+moves: 250.906
+wins: 0
+win percentage: 0.0%
+best score: 8960
+
+
+score: 2898.852
+moves: 247.592
+wins: 0
+win percentage: 0.0%
+best score: 10692
+
+
+score: 3030.836
+moves: 255.489
+wins: 0
+win percentage: 0.0%
+best score: 9880
+
+
+score: 2870.892
+moves: 245.943
+wins: 0
+win percentage: 0.0%
+best score: 8612
+
+
+score: 2929.92
+moves: 249.557
+wins: 0
+win percentage: 0.0%
+best score: 9584
+
+
+score: 2893.252
+moves: 246.842
+wins: 0
+win percentage: 0.0%
+best score: 10436
+
+
+score: 2980.104
+moves: 252.047
+wins: 0
+win percentage: 0.0%
+best score: 7996
+
+
+score: 2930.4
+moves: 249.712
+wins: 0
+win percentage: 0.0%
+best score: 8880

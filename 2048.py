@@ -234,6 +234,21 @@ def AIHighScoreMove(board, available):
             move = i
     return move
 
+def AIFreeSpaceMove(board, available):
+    move = 0
+    best = -1
+    newboard = Board()
+    newboard.empty = board.empty
+    for i in available:
+        for x in range(0,4):
+            for y in range(0,4):
+                newboard.cells[x][y] = board.cells[x][y]
+        newboard.move(i)
+        if len(newboard.empty) > best:
+            best = len(newboard.empty)
+            move = i
+    return move
+
 def AITest(rounds=1000):
     scores = []
     moves = []
@@ -245,7 +260,7 @@ def AITest(rounds=1000):
             a = Board()
             available = availableMoves(a)
             while available:
-                movetomake = AIHighScoreMove(a, available)
+                movetomake = AIFreeSpaceMove(a, available)
                 a.move(movetomake)
                 available = availableMoves(a)
             if a.won():
