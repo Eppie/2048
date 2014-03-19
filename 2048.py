@@ -1,5 +1,6 @@
 import random
 import math
+import copy
 
 class Board():
     UP, DOWN, LEFT, RIGHT = 1, 2, 3, 4
@@ -202,30 +203,62 @@ class Board():
 
         self.__score += score
         self.__nummoves += 1
+        return moved
 
-def AIRandomMove():
-    return random.choice([1, 2, 3, 4])
+def availableMoves(board):
+    moves = []
+    newboard = Board()
+    for i in range(1,5):
+        newboard.cells = copy.deepcopy(board.cells)
+        if newboard.move(i):
+            moves.append(i)
+    return moves
+            
+def AIRandomAvailableMove(available):
+    return random.choice(available)
+
+def AIPreferenceMove(available):
+    if 4 in available:
+        return 4
+    elif 1 in available:
+        return 1
+    elif 3 in available:
+        return 3
+    elif 2 in available:
+        return 2
 
 def AITest(rounds=1000):
     scores = []
     moves = []
-
+    best = 0
     wins = 0
-    for _ in range(10):
+    for _ in range(1):
         for _ in range(rounds):
             a = Board()
-            while a.canMove():
-                movetomake = AIRandomMove()
+            available = availableMoves(a)
+            while available:
+                movetomake = AIPreferenceMove(available)
                 a.move(movetomake)
+                available = availableMoves(a)
             if a.won():
                 wins += 1
+                print a
+                print a.score()
+                print a.numMoves()
             scores.append(a.score())
             moves.append(a.numMoves())
+            if a.score() > best:
+                best = a.score()
 
         print 'score: ' + str(sum(scores)/float(len(scores)))
         print 'moves: ' + str(sum(moves)/float(len(moves)))
         print 'wins: ' + str(wins)
         print 'win percentage: ' + str(float(wins)/float(rounds)*100) + '%'
+        print 'best score: ' + str(best)
         print '\n'
+        scores = []
+        moves = []
+        wins = 0
+        best = 0
 
 AITest(1000)
