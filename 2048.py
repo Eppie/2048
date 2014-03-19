@@ -90,10 +90,8 @@ class Board():
             if c not in az:
                 return '?'
             s = az[c]
-        elif c == 1024:
-            s = ' 1k'
-        elif c == 2048:
-            s = ' 2k'
+        elif c >=1024:
+            s = ' ' + str(int(2**(math.log(c, 2)-10))) + 'k'
         else:
             s = '%3d' % c
 
@@ -199,12 +197,36 @@ def availableMoves(board):
     moves = []
     newboard = Board()
     for i in range(1,5):
-        for x in range(0,4):
-            for y in range(0,4):
+        for x in range(4):
+            for y in range(4):
                 newboard.cells[x][y] = board.cells[x][y]
         if newboard.move(i):
             moves.append(i)
     return moves
+
+def smoothness(board):
+    result = 0
+    for i in range(4):
+        result += math.fabs(board.cells[0][i] - board.cells[1][i])
+        result += math.fabs(board.cells[1][i] - board.cells[2][i])
+        result += math.fabs(board.cells[2][i] - board.cells[3][i])
+        if board.cells[i][0] == board.cells[i][1]:
+            result -= board.cells[i][0] * 2
+        if board.cells[i][1] == board.cells[i][2]:
+            result -= board.cells[i][1] * 2
+        if board.cells[i][2] == board.cells[i][3]:
+            result -= board.cells[i][2] * 2
+        result += math.fabs(board.cells[i][0] - board.cells[i][1])
+        result += math.fabs(board.cells[i][1] - board.cells[i][2])
+        result += math.fabs(board.cells[i][2] - board.cells[i][3])
+        if board.cells[0][i] == board.cells[1][i]:
+            result -= board.cells[0][i] * 2
+        if board.cells[1][i] == board.cells[2][i]:
+            result -= board.cells[1][i] * 2
+        if board.cells[2][i] == board.cells[3][i]:
+            result -= board.cells[2][i] * 2
+    return result
+
 
 def AIRandomAvailableMove(available):
     return random.choice(available)
@@ -225,8 +247,8 @@ def AIHighScoreMove(board, available):
     newboard = Board()
     newboard.score = board.score
     for i in available:
-        for x in range(0,4):
-            for y in range(0,4):
+        for x in range(4):
+            for y in range(4):
                 newboard.cells[x][y] = board.cells[x][y]
         newboard.move(i)
         if newboard.score > best:
@@ -240,12 +262,27 @@ def AIFreeSpaceMove(board, available):
     newboard = Board()
     newboard.empty = board.empty
     for i in available:
-        for x in range(0,4):
-            for y in range(0,4):
+        for x in range(4):
+            for y in range(4):
                 newboard.cells[x][y] = board.cells[x][y]
         newboard.move(i)
         if len(newboard.empty) > best:
             best = len(newboard.empty)
+            move = i
+    return move
+
+def AISmoothBoard(board, available):
+    move = 0
+    best = 999999
+    newboard = Board()
+    for i in available:
+        for x in range(4):
+            for y in range(4):
+                newboard.cells[x][y] = board.cells[x][y]
+        newboard.move(i)
+        smooth = smoothness(newboard)
+        if smooth < best:
+            best = smooth
             move = i
     return move
 
@@ -256,23 +293,27 @@ def AITest(rounds=1000):
     bestboard = []
     wins = 0
     for _ in range(10):
-        for _ in range(rounds):
+        for i in range(rounds):
             a = Board()
             available = availableMoves(a)
             while available:
-                movetomake = AIFreeSpaceMove(a, available)
+                movetomake = AISmoothBoard(a, available)
                 a.move(movetomake)
                 available = availableMoves(a)
             if a.won():
                 wins += 1
-                print a
-                print a.score
-                print a.numMoves()
+                #print a
+                #print a.score
+                #print a.numMoves()
             scores.append(a.score)
             moves.append(a.numMoves())
             if a.score > best:
                 best = a.score
                 bestboard = a
+                print 'iteration: ' + str(i)
+                print a
+                print a.score
+                print a.numMoves()
 
         print 'score: ' + str(sum(scores)/float(len(scores)))
         print 'moves: ' + str(sum(moves)/float(len(moves)))

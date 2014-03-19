@@ -284,3 +284,74 @@ moves: 249.712
 wins: 0
 win percentage: 0.0%
 best score: 8880
+----------------------------------------------------------
+SMOOTHEST MOVE (PURE GREEDY)
+
+score: 10497.228
+moves: 621.801
+wins: 112
+win percentage: 11.2%
+best score: 50392
+
+
+score: 10386.032
+moves: 620.906
+wins: 95
+win percentage: 9.5%
+best score: 46108
+
+
+score: 10186.936
+moves: 611.147
+wins: 84
+win percentage: 8.4%
+best score: 56696
+
+
+score: 9963.224
+moves: 598.233
+wins: 94
+win percentage: 9.4%
+best score: 35080
+
+
+score: 10432.208
+moves: 621.264
+wins: 105
+win percentage: 10.5%
+best score: 54796
+
+
+score: 10384.764
+moves: 619.344
+wins: 107
+win percentage: 10.7%
+best score: 36504
+
+
+score: 10610.256
+moves: 630.997
+wins: 101
+win percentage: 10.1%
+best score: 36076
+
+
+score: 9992.54
+moves: 600.312
+wins: 91
+win percentage: 9.1%
+best score: 36164
+
+
+score: 10361.004
+moves: 618.349
+wins: 103
+win percentage: 10.3%
+best score: 51304
+
+
+score: 10409.376
+moves: 620.674
+wins: 97
+win percentage: 9.7%
+best score: 74116
