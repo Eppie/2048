@@ -140,3 +140,75 @@ moves: 207.878
 wins: 0
 win percentage: 0.0%
 best score: 7472
+
+----------------------------------------------------------
+HIGH SCORE MOVE
+
+score: 4087.748
+moves: 318.003
+wins: 0
+win percentage: 0.0%
+best score: 13312
+
+
+score: 4118.584
+moves: 319.559
+wins: 0
+win percentage: 0.0%
+best score: 14616
+
+
+score: 4135.012
+moves: 320.607
+wins: 0
+win percentage: 0.0%
+best score: 13312
+
+
+score: 3979.808
+moves: 312.024
+wins: 0
+win percentage: 0.0%
+best score: 14148
+
+
+score: 4156.576
+moves: 321.845
+wins: 0
+win percentage: 0.0%
+best score: 16916
+
+
+score: 4089.728
+moves: 318.205
+wins: 0
+win percentage: 0.0%
+best score: 12768
+
+
+score: 4107.592
+moves: 318.939
+wins: 0
+win percentage: 0.0%
+best score: 13012
+
+
+score: 4155.612
+moves: 321.32
+wins: 0
+win percentage: 0.0%
+best score: 16056
+
+
+score: 4129.912
+moves: 320.457
+wins: 0
+win percentage: 0.0%
+best score: 15788
+
+
+score: 4148.948
+moves: 322.016
+wins: 0
+win percentage: 0.0%
+best score: 13528

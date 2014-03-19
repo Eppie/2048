@@ -1,6 +1,5 @@
 import random
 import math
-import copy
 import cProfile
 
 class Board():
@@ -9,7 +8,7 @@ class Board():
     def __init__(self, azmode=False):
         self.__won = False
         self.__azmode = False
-        self.__score = 0
+        self.score = 0
         self.__nummoves = 0
         self.choices = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4]
         self.empty = [(x, y) for x in range(4) for y in range(4)]
@@ -25,10 +24,6 @@ class Board():
         rg = range(4)
         s = '\n'.join([' '.join([self.getCellStr(x, y) for x in rg]) for y in rg])
         return s + '\n'
-
-    def score(self):
-        """return the current score"""
-        return self.__score
 
     def numMoves(self):
         """return the number of moves made so far"""
@@ -178,7 +173,7 @@ class Board():
             return 0
 
         moved = False
-        score = 0
+        tempscore = 0
 
         for i in range(4):
             origin = get(i)
@@ -188,14 +183,14 @@ class Board():
             chg(i, new)
             if origin != new:
                 moved = True
-            score += pts
+            tempscore += pts
 
         self.empty = self.getEmptyCells()
 
         if moved and add_tile:
             self.addTile()
 
-        self.__score += score
+        self.score += tempscore
         self.__nummoves += 1
 
         return moved
@@ -224,34 +219,52 @@ def AIPreferenceMove(available):
     if 2 in available:
         return 2
 
+def AIHighScoreMove(board, available):
+    move = 0
+    best = -1
+    newboard = Board()
+    newboard.score = board.score
+    for i in available:
+        for x in range(0,4):
+            for y in range(0,4):
+                newboard.cells[x][y] = board.cells[x][y]
+        newboard.move(i)
+        if newboard.score > best:
+            best = newboard.score
+            move = i
+    return move
+
 def AITest(rounds=1000):
     scores = []
     moves = []
     best = 0
+    bestboard = []
     wins = 0
     for _ in range(10):
         for _ in range(rounds):
             a = Board()
             available = availableMoves(a)
             while available:
-                movetomake = AIRandomAvailableMove(available)
+                movetomake = AIHighScoreMove(a, available)
                 a.move(movetomake)
                 available = availableMoves(a)
             if a.won():
                 wins += 1
                 print a
-                print a.score()
+                print a.score
                 print a.numMoves()
-            scores.append(a.score())
+            scores.append(a.score)
             moves.append(a.numMoves())
-            if a.score() > best:
-                best = a.score()
+            if a.score > best:
+                best = a.score
+                bestboard = a
 
         print 'score: ' + str(sum(scores)/float(len(scores)))
         print 'moves: ' + str(sum(moves)/float(len(moves)))
         print 'wins: ' + str(wins)
         print 'win percentage: ' + str(float(wins)/float(rounds)*100) + '%'
         print 'best score: ' + str(best)
+        print bestboard
         print '\n'
         scores = []
         moves = []
