@@ -1,6 +1,7 @@
 import random
 import math
-import cProfile
+import numpy
+
 
 class Board():
     UP, DOWN, LEFT, RIGHT = 1, 2, 3, 4
@@ -9,13 +10,13 @@ class Board():
         self.__won = False
         self.__azmode = False
         self.score = 0
+        self.max = 2
         self.__nummoves = 0
         self.choices = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4]
         self.empty = [(x, y) for x in range(4) for y in range(4)]
         self.cells = [[0]*4 for _ in range(4)]
         self.addTile()
         self.addTile()
-
 
     def __str__(self):
         """
@@ -90,7 +91,7 @@ class Board():
             if c not in az:
                 return '?'
             s = az[c]
-        elif c >=1024:
+        elif c >= 1024:
             s = ' ' + str(int(2**(math.log(c, 2)-10))) + 'k'
         else:
             s = '%3d' % c
@@ -184,6 +185,10 @@ class Board():
             tempscore += pts
 
         self.empty = self.getEmptyCells()
+        for i in range(4):
+            for j in range(4):
+                if self.cells[i][j] > self.max:
+                    self.max == self.cells[i][j]
 
         if moved and add_tile:
             self.addTile()
@@ -193,10 +198,11 @@ class Board():
 
         return moved
 
+
 def availableMoves(board):
     moves = []
     newboard = Board()
-    for i in range(1,5):
+    for i in range(1, 5):
         for x in range(4):
             for y in range(4):
                 newboard.cells[x][y] = board.cells[x][y]
@@ -204,7 +210,8 @@ def availableMoves(board):
             moves.append(i)
     return moves
 
-def smoothness(board):
+
+def smoothness(board, free=2, punishment=2):
     result = 0
     for i in range(4):
         result += math.fabs(board.cells[0][i] - board.cells[1][i])
@@ -225,13 +232,17 @@ def smoothness(board):
             result -= board.cells[1][i] * 2
         if board.cells[2][i] == board.cells[3][i]:
             result -= board.cells[2][i] * 2
+    if len(board.empty) < free:
+        result = result * punishment
+    result = result - board.max
     return result
 
 
-def AIRandomAvailableMove(available):
+def AIRandomAvailableMove(board, available, free):
     return random.choice(available)
 
-def AIPreferenceMove(available):
+
+def AIPreferenceMove(board, available, free):
     if 4 in available:
         return 4
     if 1 in available:
@@ -241,7 +252,8 @@ def AIPreferenceMove(available):
     if 2 in available:
         return 2
 
-def AIHighScoreMove(board, available):
+
+def AIHighScoreMove(board, available, free):
     move = 0
     best = -1
     newboard = Board()
@@ -256,7 +268,8 @@ def AIHighScoreMove(board, available):
             move = i
     return move
 
-def AIFreeSpaceMove(board, available):
+
+def AIFreeSpaceMove(board, available, free):
     move = 0
     best = -1
     newboard = Board()
@@ -271,7 +284,8 @@ def AIFreeSpaceMove(board, available):
             move = i
     return move
 
-def AISmoothBoard(board, available):
+
+def AISmoothBoard(board, available, free=2, punishment=2):
     move = 0
     best = 999999
     newboard = Board()
@@ -280,51 +294,63 @@ def AISmoothBoard(board, available):
             for y in range(4):
                 newboard.cells[x][y] = board.cells[x][y]
         newboard.move(i)
-        smooth = smoothness(newboard)
+        smooth = smoothness(newboard, free, punishment)
         if smooth < best:
             best = smooth
             move = i
     return move
 
-def AITest(rounds=1000):
+
+def AITest(repeats=10, rounds=1000):
     scores = []
     moves = []
     best = 0
+    worst = 99999
     bestboard = []
+    worstboard = []
     wins = 0
-    for _ in range(10):
-        for i in range(rounds):
-            a = Board()
-            available = availableMoves(a)
-            while available:
-                movetomake = AISmoothBoard(a, available)
-                a.move(movetomake)
+    for punishment in range(0, 21):
+        print 'PUNISHMENT: ' + str(punishment)
+        for _ in range(repeats):
+            for i in range(rounds):
+                a = Board()
                 available = availableMoves(a)
-            if a.won():
-                wins += 1
-                #print a
-                #print a.score
-                #print a.numMoves()
-            scores.append(a.score)
-            moves.append(a.numMoves())
-            if a.score > best:
-                best = a.score
-                bestboard = a
-                print 'iteration: ' + str(i)
-                print a
-                print a.score
-                print a.numMoves()
+                while available:
+                    movetomake = AISmoothBoard(a, available, 2, punishment)
+                    a.move(movetomake)
+                    available = availableMoves(a)
+                if a.won():
+                    wins += 1
+                    #print a
+                    #print a.score
+                    #print a.numMoves()
+                scores.append(a.score)
+                moves.append(a.numMoves())
+                if a.score > best:
+                    best = a.score
+                    bestboard = a
+                    #print 'iteration: ' + str(i)
+                    #print a
+                    #print a.score
+                    #print a.numMoves()
+                if a.score < worst:
+                    worst = a.score
+                    worstboard = a
 
-        print 'score: ' + str(sum(scores)/float(len(scores)))
-        print 'moves: ' + str(sum(moves)/float(len(moves)))
-        print 'wins: ' + str(wins)
-        print 'win percentage: ' + str(float(wins)/float(rounds)*100) + '%'
-        print 'best score: ' + str(best)
-        print bestboard
-        print '\n'
-        scores = []
-        moves = []
-        wins = 0
-        best = 0
+            print 'average score: ' + str(sum(scores)/float(len(scores)))
+            print 'score stdev: ' + str(numpy.std(scores))
+            print 'average moves: ' + str(sum(moves)/float(len(moves)))
+            print 'wins: ' + str(wins)
+            print 'win percentage: ' + str(float(wins)/float(rounds)*100) + '%'
+            print 'best score: ' + str(best)
+            print bestboard
+            print 'worst score: ' + str(worst)
+            print worstboard
+            print '\n'
+            scores = []
+            moves = []
+            wins = 0
+            best = 0
+            worst = 99999
 
-AITest(1000)
+AITest(1, 1000)
