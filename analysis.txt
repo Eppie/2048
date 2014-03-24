@@ -80,104 +80,24 @@ worst score: 304
  32   8  16   8
   8  16   8   4
   4   8   4   2
+
 ----------------------------------------------------------
 SMOOTHEST MOVE (PURE GREEDY)
 
-FREE CRITERIA: N/A
-average score: 10070.896
-score stdev: 6767.44337407
-average moves: 603.912
-wins: 92
-win percentage: 9.2%
-best score: 51092
-worst score: 384
+average score: 17595.764
+score stdev: 10500.8339429
+average moves: 968.846
+wins: 349
+win percentage: 34.9%
 
+best score: 80060
+ 64 256  1k  4k
+ 16  32 512  2k
+  4  16  32  16
+  2   8   4   2
 
-FREE CRITERIA: 1
-average score: 10287.18
-score stdev: 7009.50559737
-average moves: 615.692
-wins: 99
-win percentage: 9.9%
-best score: 36084
-worst score: 484
-
-
-FREE CRITERIA: 2
-average score: 15127.86
-score stdev: 8850.52734589
-average moves: 854.379
-wins: 255
-win percentage: 25.5%
-best score: 56520
-worst score: 512
-
-
-FREE CRITERIA: 3
-average score: 13767.124
-score stdev: 8322.77830635
-average moves: 792.388
-wins: 185
-win percentage: 18.5%
-best score: 67588
-worst score: 680
-
-
-FREE CRITERIA: 4
-average score: 11658.788
-score stdev: 7073.46895512
-average moves: 694.555
-wins: 108
-win percentage: 10.8%
-best score: 37400
-worst score: 560
-
-
-FREE CRITERIA: 5
-average score: 10083.38
-score stdev: 6368.11101031
-average moves: 617.819
-wins: 64
-win percentage: 6.4%
-best score: 36112
-worst score: 1240
-
-
-FREE CRITERIA: 6
-average score: 9216.804
-score stdev: 6050.773788
-average moves: 570.819
-wins: 57
-win percentage: 5.7%
-best score: 49880
-worst score: 436
-
-
-FREE CRITERIA: 7
-average score: 7911.556
-score stdev: 5261.55046758
-average moves: 505.22
-wins: 27
-win percentage: 2.7%
-best score: 51524
-worst score: 540
-
-
-FREE CRITERIA: 8
-average score: 7047.624
-score stdev: 4505.34829759
-average moves: 459.398
-wins: 15
-win percentage: 1.5%
-best score: 29080
-worst score: 536
-
-
-FREE CRITERIA: 9
-average score: 6626.948
-score stdev: 4468.27120364
-average moves: 436.06
-wins: 17
-win percentage: 1.7%
-best score: 28268
-worst score: 196
+worst score: 1212
+  2   8  16 128
+  8  16  32   8
+  2  32   8   4
+  8  16   4   2
