@@ -84,20 +84,19 @@ worst score: 304
 ----------------------------------------------------------
 SMOOTHEST MOVE (PURE GREEDY)
 
-average score: 17595.764
-score stdev: 10500.8339429
-average moves: 968.846
-wins: 349
-win percentage: 34.9%
+average score: 19116.06
+score stdev: 9647.82566242
+average moves: 1049.518
+wins: 381
+win percentage: 38.1%
+best score: 76472
+  2  16  32   2
+  8  32  64  1k
+  4  16 256  2k
+  2   4 128  4k
 
-best score: 80060
- 64 256  1k  4k
- 16  32 512  2k
-  4  16  32  16
-  2   8   4   2
-
-worst score: 1212
-  2   8  16 128
-  8  16  32   8
-  2  32   8   4
+worst score: 1312
   8  16   4   2
+  2   8  16  64
+ 32   4   8   4
+128   2   4   2

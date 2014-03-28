@@ -1,22 +1,24 @@
 import random
 import math
 import numpy
+import threading
+from multiprocessing import Pool, Lock
 
+UP, DOWN, LEFT, RIGHT = 1, 2, 3, 4
 
 class Board():
-    UP, DOWN, LEFT, RIGHT = 1, 2, 3, 4
 
-    def __init__(self, azmode=False):
-        self.__won = False
-        self.__azmode = False
+    def __init__(self):
+        self.won = False
         self.score = 0
         self.max = 2
-        self.__nummoves = 0
-        self.choices = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4]
+        self.numMoves = 0
         self.empty = [(x, y) for x in range(4) for y in range(4)]
         self.cells = [[0]*4 for _ in range(4)]
         self.addTile()
         self.addTile()
+        self.evaluation = 0
+        self.lastmove = 0
 
     def __str__(self):
         """
@@ -24,17 +26,7 @@ class Board():
         """
         rg = range(4)
         s = '\n'.join([' '.join([self.getCellStr(x, y) for x in rg]) for y in rg])
-        return s + '\n'
-
-    def numMoves(self):
-        """return the number of moves made so far"""
-        return self.__nummoves
-
-    def won(self):
-        """
-        return True if the board contains at least one tile equal to 2048 or greater, False otherwise
-        """
-        return self.__won
+        return s + '\n' + str(self.evaluation) + '\n'
 
     def canMove(self):
         """
@@ -55,7 +47,7 @@ class Board():
         """
         return True if the board is filled
         """
-        return len(self.getEmptyCells()) == 0
+        return len(self.empty) == 0
 
     def addTile(self):
         """
@@ -63,11 +55,11 @@ class Board():
           choices: a list of possible choices for the value of the tile.
                    default is [2, 2, 2, 2, 2, 2, 2, 2, 2, 4].
         """
-        v = random.choice(self.choices)
+        v = random.choice([2, 2, 2, 2, 2, 2, 2, 2, 2, 4])
         if self.empty:
             x, y = random.choice(self.empty)
             self.setCell(x, y, v)
-            self.empty = self.getEmptyCells()
+            self.getEmptyCells()
 
     def getCell(self, x, y):
         """return the cell value at x,y"""
@@ -79,19 +71,8 @@ class Board():
         """
         c = self.getCell(x, y)
 
-        az = {}
-        for i in range(1, int(math.log(2048, 2))):
-            az[2**i] = chr(i+96)
-
-        if c == 0 and self.__azmode:
-            return '.'
-        elif c == 0:
+        if c == 0:
             return '  .'
-
-        elif self.__azmode:
-            if c not in az:
-                return '?'
-            s = az[c]
         elif c >= 1024:
             s = ' ' + str(int(2**(math.log(c, 2)-10))) + 'k'
         else:
@@ -123,14 +104,14 @@ class Board():
 
     def getEmptyCells(self):
         """return a (x, y) pair for each cell"""
-        return [(x, y) for x in range(4) for y in range(4) if self.getCell(x, y) == 0]
+        self.empty = [(x, y) for x in range(4) for y in range(4) if self.getCell(x, y) == 0]
 
     def __collapseLineOrCol(self, line, d):
         """
         Merge tiles in a line or column according to a direction and return a
         tuple with the new line and the score for the move on this line
         """
-        if (d == Board.LEFT or d == Board.UP):
+        if (d == LEFT or d == UP):
             inc = 1
             rg = xrange(0, 3, inc)
         else:
@@ -144,7 +125,7 @@ class Board():
             if line[i] == line[i+inc]:
                 v = line[i]*2
                 if v == 2048:
-                    self.__won = True
+                    self.won = True
 
                 line[i] = v
                 line[i+inc] = 0
@@ -157,7 +138,7 @@ class Board():
         Move a line or column to a given direction (d)
         """
         nl = [c for c in line if c != 0]
-        if d == Board.UP or d == Board.LEFT:
+        if d == UP or d == LEFT:
             return nl + [0] * (4 - len(nl))
         return [0] * (4 - len(nl)) + nl
 
@@ -165,9 +146,9 @@ class Board():
         """
         move and return the move score
         """
-        if d == Board.LEFT or d == Board.RIGHT:
+        if d == LEFT or d == RIGHT:
             chg, get = self.setLine, self.getLine
-        elif d == Board.UP or d == Board.DOWN:
+        elif d == UP or d == DOWN:
             chg, get = self.setCol, self.getCol
         else:
             return 0
@@ -185,7 +166,7 @@ class Board():
                 moved = True
             tempscore += pts
 
-        self.empty = self.getEmptyCells()
+        self.getEmptyCells()
         for i in range(4):
             for j in range(4):
                 if self.cells[i][j] > self.max:
@@ -195,32 +176,44 @@ class Board():
             self.addTile()
 
         self.score += tempscore
-        self.__nummoves += 1
+        self.numMoves += 1
 
         return moved
 
 
 def possibleNewTiles(board):
-    result = []
+    result_twos = []
+    result_fours = []
     for cell in board.empty:
-        for v in [2,4]:
-            newboard = Board()
-            for x in range(4):
-                for y in range(4):
-                    newboard.cells[x][y] = board.cells[x][y]
-            newboard.setCell(cell[0], cell[1], v)
-            result.append(newboard)
-    return result
+        newboard = Board()
+        newboard.max = board.max
+        for x in range(4):
+            for y in range(4):
+                newboard.cells[x][y] = board.cells[x][y]
+        newboard.setCell(cell[0], cell[1], 2)
+        #evaluate(newboard)
+        result_twos.append(newboard)
+        newboard = Board()
+        newboard.max = board.max
+        for x in range(4):
+            for y in range(4):
+                newboard.cells[x][y] = board.cells[x][y]
+        newboard.setCell(cell[0], cell[1], 4)
+        #evaluate(newboard)
+        result_fours.append(newboard)
+
+    return result_twos, result_fours
 
 
-def generateDepthOne(board):
+def generateDepthOne(board, available):
     result = []
-    for i in availableMoves(board):
+    for i in available:
         newboard = Board()
         for x in range(4):
             for y in range(4):
                 newboard.cells[x][y] = board.cells[x][y]
         newboard.move(i, False)
+        newboard.lastmove = i
         result.append(newboard)
     return result
 
@@ -236,39 +229,54 @@ def availableMoves(board):
             moves.append(i)
     return moves
 
+def evaluateOneBoard(board):
+    evaluate(board)
+    print board
 
-def smoothness(board, free=2, punishment=2):
+def evaluate(board, free=2, punishment=2):
     result = 0
     for i in range(4):
-        result += math.fabs(board.cells[0][i] - board.cells[1][i])
-        result += math.fabs(board.cells[1][i] - board.cells[2][i])
-        result += math.fabs(board.cells[2][i] - board.cells[3][i])
-        if board.cells[i][0] == board.cells[i][1]:
-            result -= board.cells[i][0] * 2
-        if board.cells[i][1] == board.cells[i][2]:
-            result -= board.cells[i][1] * 2
-        if board.cells[i][2] == board.cells[i][3]:
-            result -= board.cells[i][2] * 2
-        result += math.fabs(board.cells[i][0] - board.cells[i][1])
-        result += math.fabs(board.cells[i][1] - board.cells[i][2])
-        result += math.fabs(board.cells[i][2] - board.cells[i][3])
-        if board.cells[0][i] == board.cells[1][i]:
-            result -= board.cells[0][i] * 2
-        if board.cells[1][i] == board.cells[2][i]:
-            result -= board.cells[1][i] * 2
-        if board.cells[2][i] == board.cells[3][i]:
-            result -= board.cells[2][i] * 2
-    if len(board.empty) < free:
-        result = result * punishment
-    result = result / board.max
+        for j in range(3):
+            result += math.fabs(board.cells[j][i] - board.cells[j+1][i]) * 1.1
+            result += math.fabs(board.cells[i][j] - board.cells[i][j+1]) * 1.1
+            if board.cells[i][j] == board.cells[i][j+1]:
+                result -= board.cells[i][j] * 1.76
+            if board.cells[j][i] == board.cells[j+1][i]:
+                result -= board.cells[j][i] * 1.76
+    try:
+        result /= len(board.empty)
+    except:
+        pass
+    result -= board.max
+    board.evaluation = result
     return result
 
 
-def AIRandomAvailableMove(board, available, free):
+# def soHeuristic(board):
+#     result = 0
+#     for x in range(4):
+#         if board.cells[x][0] >= board.cells[x][1] >= board.cells[x][2] >= board.cells[x][3]:
+#             result += max(board.cells[x][0], board.cells[x][1], board.cells[x][2], board.cells[x][3])
+#         if board.cells[0][x] >= board.cells[1][x] >= board.cells[2][x] >= board.cells[3][x]:
+#             result += max(board.cells[0][x], board.cells[1][x], board.cells[2][x], board.cells[3][x])
+#         if board.cells[x][0] <= board.cells[x][1] <= board.cells[x][2] <= board.cells[x][3]:
+#             result += max(board.cells[x][0], board.cells[x][1], board.cells[x][2], board.cells[x][3])
+#         if board.cells[0][x] <= board.cells[1][x] <= board.cells[2][x] <= board.cells[3][x]:
+#             result += max(board.cells[0][x], board.cells[1][x], board.cells[2][x], board.cells[3][x])
+#         for y in range(3):
+#             if board.cells[x][y] == board.cells[x][y+1]:
+#                 result += board.cells[x][y] * 2
+#             if board.cells[y][x] == board.cells[y+1][x]:
+#                 result += board.cells[y][x] * 2
+#     result *= len(board.empty)
+#     return result
+
+
+def AIRandomAvailableMove(board, available):
     return random.choice(available)
 
 
-def AIPreferenceMove(board, available, free):
+def AIPreferenceMove(board, available):
     if 4 in available:
         return 4
     if 1 in available:
@@ -279,7 +287,7 @@ def AIPreferenceMove(board, available, free):
         return 2
 
 
-def AIHighScoreMove(board, available, free):
+def AIHighScoreMove(board, available):
     move = 0
     best = -1
     newboard = Board()
@@ -295,7 +303,7 @@ def AIHighScoreMove(board, available, free):
     return move
 
 
-def AIFreeSpaceMove(board, available, free):
+def AIFreeSpaceMove(board, available):
     move = 0
     best = -1
     newboard = Board()
@@ -311,69 +319,129 @@ def AIFreeSpaceMove(board, available, free):
     return move
 
 
-def AISmoothBoard(board, available, free=2, punishment=2):
+def AISmoothBoard(board, available):
     move = 0
-    best = 999999
+    best = float("inf")
     newboard = Board()
+    newboard.max = board.max
     for i in available:
         for x in range(4):
             for y in range(4):
                 newboard.cells[x][y] = board.cells[x][y]
         newboard.move(i, False)
-        # boards = generateDepthOne(newboard)
-        # boards = possibleNewTiles(newboard)
-        # smooth = []
-        # for b in boards:
-            # smooth = smoothness(b, free, punishment)
-        # smooth = sum(smooth) / len(smooth)
-        smooth = smoothness(newboard, free, punishment)
-        if smooth < best:
-            best = smooth
+        evaluate(newboard)
+        if newboard.evaluation < best:
+            best = newboard.evaluation
             move = i
-    return move
+    return move, best
 
 
-def AITest(repeats=10, rounds=1000):
+def AISmoothDepthOne(board, available):
+    best = 999999
+    result = [[],[],[],[]]
+    result2 = [0,0,0,0]
+    boards = generateDepthOne(board, available)
+    for b in boards:
+        b.getEmptyCells()
+        result2[b.lastmove-1] = evaluate(b)
+        newboards2, newboards4 = possibleNewTiles(b)
+        for newboard in newboards2:
+            newboard.getEmptyCells()
+            evaluate(newboard)
+            result[b.lastmove-1].append(newboard.evaluation * .9)
+        for newboard in newboards4:
+            newboard.getEmptyCells()
+            evaluate(newboard)
+            result[b.lastmove-1].append(newboard.evaluation * .1)
+    for i in range(len(result)):
+        try:
+            result[i] = (sum(result[i])/len(result[i]) * 1) + (result2[i])
+        except ZeroDivisionError:
+            result[i] = 0
+    for i in range(len(result)):
+        if result[i] == 0:
+            result[i] = 999999
+        if result[i] < best:
+            best = result[i]
+            move = i+1
+    return move, best
+
+
+
+def AITest(rounds=200):
     scores = []
     moves = []
     best = 0
-    worst = 99999
+    worst = 999999
     bestboard = []
     worstboard = []
     wins = 0
-    for _ in range(repeats):
-        for _ in range(rounds):
-            a = Board()
+    for _ in range(rounds):
+        a = Board()
+        available = availableMoves(a)
+        while available:
+            movetomake, evaluation = AISmoothDepthOne(a, available)
+            a.evaluation = evaluation
+            a.move(movetomake)
             available = availableMoves(a)
-            while available:
-                movetomake = AISmoothBoard(a, available)
-                a.move(movetomake)
-                available = availableMoves(a)
-            if a.won():
-                wins += 1
-            if a.score > best:
-                best = a.score
-                bestboard = a
-            if a.score < worst:
-                worst = a.score
-                worstboard = a
-            scores.append(a.score)
-            moves.append(a.numMoves())
+        if a.won:
+            wins += 1
+        if a.score > best:
+            best = a.score
+            bestboard = a
+        if a.score < worst:
+            worst = a.score
+            worstboard = a
+        scores.append(a.score)
+        moves.append(a.numMoves)
 
-        print 'average score: ' + str(sum(scores)/float(len(scores)))
-        print 'score stdev: ' + str(numpy.std(scores))
-        print 'average moves: ' + str(sum(moves)/float(len(moves)))
-        print 'wins: ' + str(wins)
-        print 'win percentage: ' + str(float(wins)/float(rounds)*100) + '%'
-        print 'best score: ' + str(best)
-        print bestboard
-        print 'worst score: ' + str(worst)
-        print worstboard
-        print '\n'
-        scores = []
-        moves = []
-        wins = 0
-        best = 0
-        worst = 99999
+    avgscore = sum(scores)/float(len(scores))
+    avgmoves = sum(moves)/float(len(moves))
+    winpercent = float(wins)/float(rounds)*100
+    return [avgscore, scores, avgmoves, wins, winpercent, bestboard, worstboard, best, worst]
+    scores = []
+    moves = []
+    wins = 0
+    best = 0
+    worst = 999999
 
-AITest(1, 1000)
+if __name__ == '__main__':
+    avgscore = []
+    stdscore = []
+    scoreslist = []
+    avgmoves = []
+    wins  = []
+    winpercent = []
+    bestboard = 0
+    worstboard = 0
+    best = 0
+    worst = 999999
+    x = [20]*50
+    pool = Pool(7)
+    results = pool.map(AITest, x)
+    for result in results:
+        avgscore.append(result[0])
+        scoreslist.append(result[1])
+        avgmoves.append(result[2])
+        wins.append(result[3])
+        winpercent.append(result[4])
+        if result[7] > best:
+            best = result[7]
+            bestboard = result[5]
+        if result[8] < worst:
+            worst = result[8]
+            worstboard = result[6]
+    for score in scoreslist:
+        stdscore.append(score)
+    stdscore = numpy.std(stdscore)
+
+    print 'average score: ' + str(sum(avgscore)/float(len(avgscore)))
+    print 'score stdev: ' + str(stdscore)
+    print 'average moves: ' + str(sum(avgmoves)/float(len(avgmoves)))
+    print 'wins: ' + str(sum(wins))
+    print 'win percentage: ' + str(sum(winpercent)/float(len(winpercent))) + '%'
+    print 'best score: ' + str(best)
+    print bestboard
+    print 'worst score: ' + str(worst)
+    print worstboard
+    print '\n'
